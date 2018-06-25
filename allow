@@ -1,0 +1,6 @@
+        #Allow SSH from any
+iptables -A INPUT -i $EXT_IF -p tcp -m tcp --dport 22 -j ACCEPT
+
+        ##Allow redirect external port 32342  port 22 from  any
+    $CMD -A INPUT -i $EXT_IF -p tcp -m tcp --dport 32342 -j ACCEPT
+    $CMD -A FORWARD -i $EXT_IF -o $VM_IF -d $INT_HOST -p tcp -m tcp --dport 22 -j ACCEPT
