@@ -1,0 +1,13 @@
+iptables -t nat -I $PORT_NUMBER POSTROUTING -o $OUT_INTERFACE --source $SOURSEIP --destination $DEST_IP -j SNAT --to-source $EXT_IP
+
+iptables -t nat -I PREROUTING -d $EXT_ADDR -j DNAT --to-destination $INTERNAL_IP
+
+ #Redirect http same port
+iptables -t nat -A PREROUTING --dst $EXT_ADDR -p tcp --dport 80 -j DNAT --to-destination $INTERNAL_IP
+
+      # Redirect port 32342 to port 22
+iptables -t nat -A PREROUTING --dst $EXT_ADDR -p tcp --dport 32342 -j DNAT --to-destination $INTERNAL_IP:22
+
+#ins sysctl net.ipv4.ip_forward = 1; enable sysctl sysctl -p /etc/sysctl.conf;
+#masquerade all
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE 
